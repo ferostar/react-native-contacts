@@ -287,6 +287,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
         String suffix = contact.hasKey("suffix") ? contact.getString("suffix") : null;
         String company = contact.hasKey("company") ? contact.getString("company") : null;
         String jobTitle = contact.hasKey("jobTitle") ? contact.getString("jobTitle") : null;
+        String note = contact.hasKey("note") ? contact.getString("note") : null;
         String department = contact.hasKey("department") ? contact.getString("department") : null;
         String thumbnailPath = contact.hasKey("thumbnailPath") ? contact.getString("thumbnailPath") : null;
 
@@ -346,6 +347,13 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 .withValue(Organization.DEPARTMENT, department);
         ops.add(op.build());
 
+        if (note != null) {
+          op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+                  .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "= ? ", new String[]{contactId, "vnd.android.cursor.item/note"})
+                  .withValue(ContactsContract.CommonDataKinds.Note.NOTE, "hello@hi.com")
+          ops.add(op.build());
+        }
+
         //TODO not sure where to allow yields
         op.withYieldAllowed(true);
 
@@ -378,7 +386,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                         .build());
             }
         }
-    
+
         ReadableArray postalAddresses = contact.hasKey("postalAddresses") ? contact.getArray("postalAddresses") : null;
         if (postalAddresses != null) {
             for (int i = 0; i < postalAddresses.size(); i++) {
@@ -397,7 +405,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 ops.add(op.build());
             }
         }
-      
+
         Context ctx = getReactApplicationContext();
         try {
             ContentResolver cr = ctx.getContentResolver();
@@ -410,8 +418,8 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 ContactsProvider contactsProvider = new ContactsProvider(cr);
                 WritableMap newlyAddedContact = contactsProvider.getContactByRawId(rawId);
 
-                callback.invoke(null, newlyAddedContact); // success           
-            }      
+                callback.invoke(null, newlyAddedContact); // success
+            }
         } catch (Exception e) {
             callback.invoke(e.toString());
         }
@@ -420,8 +428,8 @@ public class ContactsManager extends ReactContextBaseJavaModule {
     public byte[] toByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-        return stream.toByteArray();       
-    }    
+        return stream.toByteArray();
+    }
 
     /*
      * Update contact to phone's addressbook
@@ -439,6 +447,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
         String suffix = contact.hasKey("suffix") ? contact.getString("suffix") : null;
         String company = contact.hasKey("company") ? contact.getString("company") : null;
         String jobTitle = contact.hasKey("jobTitle") ? contact.getString("jobTitle") : null;
+        String note = contact.hasKey("note") ? contact.getString("note") : null;
         String department = contact.hasKey("department") ? contact.getString("department") : null;
         String thumbnailPath = contact.hasKey("thumbnailPath") ? contact.getString("thumbnailPath") : null;
 
@@ -508,6 +517,13 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 .withValue(Organization.DEPARTMENT, department);
         ops.add(op.build());
 
+        if (note != null) {
+          op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+                  .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "= ? ", new String[]{contactId, "vnd.android.cursor.item/note"})
+                  .withValue(ContactsContract.CommonDataKinds.Note.NOTE, "hello@hi.com")
+          ops.add(op.build());
+        }
+
         op.withYieldAllowed(true);
 
         for (int i = 0; i < numOfPhones; i++) {
@@ -544,7 +560,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
 
          if(thumbnailPath != null && !thumbnailPath.isEmpty()) {
             Bitmap photo = BitmapFactory.decodeFile(thumbnailPath);
-     
+
             if(photo != null) {
                 ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                         .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
@@ -581,8 +597,8 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 ContactsProvider contactsProvider = new ContactsProvider(cr);
                 WritableMap updatedContact = contactsProvider.getContactById(recordID);
 
-                callback.invoke(null, updatedContact); // success           
-            }      
+                callback.invoke(null, updatedContact); // success
+            }
         } catch (Exception e) {
             callback.invoke(e.toString());
         }
@@ -595,7 +611,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
     public void deleteContact(ReadableMap contact, Callback callback) {
 
         String recordID = contact.hasKey("recordID") ? contact.getString("recordID") : null;
-      
+
         try {
                Context ctx = getReactApplicationContext();
 

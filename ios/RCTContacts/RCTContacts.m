@@ -143,8 +143,9 @@ RCT_EXPORT_METHOD(getAllWithoutPhotos:(RCTResponseSenderBlock) callback)
     NSString *middleName = person.middleName;
     NSString *company = person.organizationName;
     NSString *jobTitle = person.jobTitle;
+    NSString *note = person.note;
     NSDateComponents *birthday = person.birthday;
-    
+
     [output setObject:recordID forKey: @"recordID"];
 
     if (givenName) {
@@ -166,8 +167,10 @@ RCT_EXPORT_METHOD(getAllWithoutPhotos:(RCTResponseSenderBlock) callback)
     if(jobTitle){
         [output setObject: (jobTitle) ? jobTitle : @"" forKey:@"jobTitle"];
     }
+    if(note){
+        [output setObject: (note) ? note : @"" forKey:@"note"];
+    }
 
-    
     if (birthday) {
         if (birthday.month != NSDateComponentUndefined && birthday.day != NSDateComponentUndefined) {
             //months are indexed to 0 in JavaScript (0 = January) so we subtract 1 from NSDateComponents.month
@@ -178,7 +181,7 @@ RCT_EXPORT_METHOD(getAllWithoutPhotos:(RCTResponseSenderBlock) callback)
             }
         }
     }
-    
+
     //handle phone numbers
     NSMutableArray *phoneNumbers = [[NSMutableArray alloc] init];
 
@@ -453,13 +456,15 @@ RCT_EXPORT_METHOD(updateContact:(NSDictionary *)contactData callback:(RCTRespons
     NSString *company = [contactData valueForKey:@"company"];
     NSString *jobTitle = [contactData valueForKey:@"jobTitle"];
     NSDictionary *birthday = [contactData valueForKey:@"birthday"];
-    
+    NSString *note = [contactData valueForKey:@"note"];
+
     contact.givenName = givenName;
     contact.familyName = familyName;
     contact.middleName = middleName;
     contact.organizationName = company;
     contact.jobTitle = jobTitle;
-    
+    contact.note = note;
+
     if (birthday) {
         NSDateComponents *components;
         if (contact.birthday != nil) {
@@ -478,7 +483,7 @@ RCT_EXPORT_METHOD(updateContact:(NSDictionary *)contactData callback:(RCTRespons
 
         contact.birthday = components;
     }
-    
+
     NSMutableArray *phoneNumbers = [[NSMutableArray alloc]init];
 
     for (id phoneData in [contactData valueForKey:@"phoneNumbers"]) {
@@ -602,10 +607,10 @@ RCT_EXPORT_METHOD(deleteContact:(NSDictionary *)contactData callback:(RCTRespons
     NSString* recordID = [contactData valueForKey:@"recordID"];
 
     NSArray *keys = @[CNContactIdentifierKey];
-    
-    
+
+
     @try {
-        
+
         CNMutableContact *contact = [[contactStore unifiedContactWithIdentifier:recordID keysToFetch:keys error:nil] mutableCopy];
         NSError *error;
         CNSaveRequest *saveRequest = [[CNSaveRequest alloc] init];
