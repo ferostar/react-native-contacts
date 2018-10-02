@@ -349,8 +349,8 @@ public class ContactsManager extends ReactContextBaseJavaModule {
 
         if (note != null) {
           op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-                  .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "= ? ", new String[]{contactId, "vnd.android.cursor.item/note"})
-                  .withValue(ContactsContract.CommonDataKinds.Note.NOTE, "hello@hi.com")
+                  .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "= ? ", new String[]{ContactsContract.Data.RAW_CONTACT_ID, "vnd.android.cursor.item/note"})
+                  .withValue(ContactsContract.CommonDataKinds.Note.NOTE, note);
           ops.add(op.build());
         }
 
@@ -519,8 +519,8 @@ public class ContactsManager extends ReactContextBaseJavaModule {
 
         if (note != null) {
           op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-                  .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "= ? ", new String[]{contactId, "vnd.android.cursor.item/note"})
-                  .withValue(ContactsContract.CommonDataKinds.Note.NOTE, "hello@hi.com")
+                  .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "= ? ", new String[]{String.valueOf(recordID), "vnd.android.cursor.item/note"})
+                  .withValue(ContactsContract.CommonDataKinds.Note.NOTE, note);
           ops.add(op.build());
         }
 
